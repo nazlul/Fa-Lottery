@@ -80,9 +80,9 @@ export default function Home() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-16 right-4 bg-white/50 backdrop-blur p-4 rounded-2xl shadow-md w-80 text-left text-sm z-20"
+            className="absolute top-16 right-4 bg-black/60 text-white backdrop-blur p-4 rounded-2xl shadow-md w-80 text-left text-sm z-20"
           >
-            <div className="mb-2 font-bold">Weekly Draw</div>
+            <div className="mb-2 font-bold text-lg">Weekly Draw</div>
             <div>Every Sunday 12:00am UTC</div>
             <div className="mt-2 font-bold">Payouts:</div>
             <div>1st: 50%</div>
