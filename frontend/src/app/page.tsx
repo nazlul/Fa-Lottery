@@ -1,42 +1,42 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useWriteContract, usePublicClient } from "wagmi";
 import { base } from "wagmi/chains";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import LotteryABI from "../../abi/Lottery.json";
 import { ethers } from "ethers";
 import { motion, AnimatePresence } from "framer-motion";
+import Head from "next/head";
 
-const CONTRACT_ADDRESS = "0xB89B940A8Ba01E0E141b947b59aadcCaB83a4E6D";
+const CONTRACT_ADDRESS = "0x92cE9853F943106EeeA5b29fC9b4888b1fA989bD";
 
 export default function Home() {
-  const [amount, setAmount] = useState<number>(0.001);
+  const [amount, setAmount] = useState(0.001);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState<string>("");
-  const [potETH, setPotETH] = useState<string>("0");
-  const [showInfo, setShowInfo] = useState<boolean>(false);
+  const [message, setMessage] = useState("");
+  const [potETH, setPotETH] = useState("0");
+  const [showInfo, setShowInfo] = useState(false);
   const infoRef = useRef(null);
   const { address } = useAccount();
   const { writeContractAsync } = useWriteContract();
+  const publicClient = usePublicClient();
 
   useEffect(() => {
     const provider = new ethers.JsonRpcProvider("https://mainnet.base.org");
     const contract = new ethers.Contract(CONTRACT_ADDRESS, LotteryABI.abi, provider);
-    contract.totalETH().then((bal: bigint) => {
-      setPotETH(ethers.formatEther(bal));
-    });
+    contract.totalETH().then((bal) => setPotETH(ethers.formatEther(bal)));
   }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (infoRef.current && !infoRef.current.contains(event.target)) {
+      if (infoRef.current && !(infoRef.current as any).contains(event.target)) {
         setShowInfo(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [infoRef]);
+  }, []);
 
   const handleBuy = async () => {
     if (!address) return;
@@ -49,7 +49,7 @@ export default function Home() {
     setStatus("loading");
     setMessage("");
     try {
-      const tx = await writeContractAsync({
+      const txHash = await writeContractAsync({
         account: address,
         chain: base,
         address: CONTRACT_ADDRESS,
@@ -57,8 +57,7 @@ export default function Home() {
         functionName: "buyTickets",
         value: BigInt(Math.floor(amount * 1e18))
       });
-      const provider = new ethers.JsonRpcProvider("https://mainnet.base.org");
-      await provider.waitForTransaction(tx);
+      await publicClient.waitForTransactionReceipt({ hash: txHash });
       setStatus("success");
       setMessage("Transaction confirmed.");
     } catch (err: any) {
@@ -68,10 +67,19 @@ export default function Home() {
     setTimeout(() => setMessage(""), 5000);
   };
 
-
   return (
+    <>
+    <Head>
+        <title>Sunday Bonanza Lottery</title>
+        <meta property="og:title" content="Sunday Bonanza Lottery" />
+        <meta property="og:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
+        <meta property="og:image" content="https://sunday-bonanze.vercel.app/banner.png" />
+        <meta property="og:url" content="https://sunday-bonanze.vercel.app" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="fc:frame" content="vNext" />
+    </Head>
     <div className="flex flex-col items-center text-black justify-center min-h-screen p-6 relative overflow-hidden bg-gradient-to-br from-pink-300 via-blue-300 to-green-300 animate-gradient bg-[400%]">
-      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute inset-0 bg-black/30"></div>
       <div className="absolute top-4 right-4 z-20">
         <button onClick={() => setShowInfo(!showInfo)} className="bg-gray-800 text-white rounded-full w-8 h-8 flex items-center justify-center">i</button>
       </div>
@@ -157,5 +165,6 @@ export default function Home() {
         }
       `}</style>
     </div>
+  </>
   );
 }

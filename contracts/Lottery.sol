@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-contract Lottery {
+interface KeeperCompatibleInterface {
+    function checkUpkeep(bytes calldata) external returns (bool upkeepNeeded, bytes memory performData);
+    function performUpkeep(bytes calldata) external;
+}
+
+contract Lottery is KeeperCompatibleInterface {
+    address public owner;
     address public house = 0x73ec7C2fc4e4E26AcCF831DB6792C25Be68673E6;
-    uint public drawInterval = 7 days;
-    uint public lastDraw;
     uint public minBuy = 0.001 ether;
+    uint public lastDraw;
 
     struct Ticket {
         address player;
@@ -15,14 +20,20 @@ contract Lottery {
     mapping(address => uint) public ticketsCount;
     uint public totalETH;
 
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
     constructor() {
-        lastDraw = block.timestamp;
+        owner = msg.sender;
+        lastDraw = (block.timestamp / 1 weeks) * 1 weeks;
     }
 
     function buyTickets() external payable {
-        require(msg.value >= minBuy, "Min 0.001 ETH");
+        require(msg.value >= minBuy);
         uint numTickets = msg.value / minBuy;
-        require(ticketsCount[msg.sender] + numTickets <= 100, "Max 100 tickets");
+        require(ticketsCount[msg.sender] + numTickets <= 100);
 
         for (uint i = 0; i < numTickets; i++) {
             tickets.push(Ticket(msg.sender));
@@ -31,10 +42,16 @@ contract Lottery {
         totalETH += msg.value;
     }
 
-    function drawWinners() external {
-        require(block.timestamp >= nextDrawTime(), "Too soon");
-        require(tickets.length >= 5, "Not enough players");
-        lastDraw = block.timestamp;
+    function checkUpkeep(bytes calldata) external view override returns (bool upkeepNeeded, bytes memory performData) {
+        upkeepNeeded = (block.timestamp >= nextDrawTime() && tickets.length >= 5);
+        performData = bytes("");
+        return (upkeepNeeded, performData);
+    }
+
+    function performUpkeep(bytes calldata) external override {
+        require(block.timestamp >= nextDrawTime());
+        require(tickets.length >= 5);
+        lastDraw = nextDrawTime();
 
         uint seed = uint(keccak256(abi.encodePacked(block.timestamp, block.prevrandao)));
         address[5] memory winners;
@@ -57,8 +74,12 @@ contract Lottery {
     }
 
     function nextDrawTime() public view returns (uint) {
-        return (lastDraw / 1 weeks + 1) * 1 weeks;
+        return (block.timestamp / 1 weeks + 1) * 1 weeks;
+    }
+
+    function withdraw(uint amount) external onlyOwner {
+        payable(owner).transfer(amount);
     }
 }
 
-// 0xB89B940A8Ba01E0E141b947b59aadcCaB83a4E6D - deployed contract address
+// 0x92cE9853F943106EeeA5b29fC9b4888b1fA989bD contract address
