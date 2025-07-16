@@ -69,20 +69,6 @@ export default function Home() {
 
   return (
     <>
-    <Head>
-      <title>Sunday Bonanza Lottery</title>
-      <meta property="og:title" content="Sunday Bonanza Lottery" />
-      <meta property="og:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
-      <meta property="og:image" content="https://sunday-bonanza.vercel.app/banner.png" />
-      <meta property="og:url" content="https://sunday-bonanza.vercel.app" />
-      <meta name="twitter:card" content="summary_large_image" />
-
-      <meta property="fc:frame" content="vNext" />
-      <meta property="fc:frame:image" content="https://sunday-bonanza.vercel.app/banner.png" />
-      <meta property="fc:frame:button:1" content="Buy Tickets" />
-      <meta property="fc:frame:button:1:action" content="link" />
-      <meta property="fc:frame:button:1:target" content="https://sunday-bonanza.vercel.app" />
-    </Head>
     <div className="flex flex-col items-center text-[#8A63D2] justify-center min-h-screen p-6 relative overflow-hidden bg-[#17101f]">
        <div className="absolute top-4 right-4 z-20">
         <button onClick={() => setShowInfo(!showInfo)} className="bg-gray-800 text-white rounded-full w-8 h-8 flex items-center justify-center">i</button>

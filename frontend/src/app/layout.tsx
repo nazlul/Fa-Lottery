@@ -1,12 +1,11 @@
-"use client";
-import * as React from "react";
 import './globals.css'
-import '@rainbow-me/rainbowkit/styles.css';
-import { WagmiProvider } from 'wagmi';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { http } from 'wagmi';
-import { base } from 'wagmi/chains';
+import '@rainbow-me/rainbowkit/styles.css'
+import * as React from "react"
+import { WagmiProvider } from 'wagmi'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { http } from 'wagmi'
+import { base } from 'wagmi/chains'
 
 const config = getDefaultConfig({
   appName: 'Lottery App',
@@ -15,9 +14,33 @@ const config = getDefaultConfig({
   transports: {
     [base.id]: http('https://mainnet.base.org')
   }
-});
+})
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
+
+export const metadata = {
+  title: "Sunday Bonanza Lottery",
+  description: "Buy tickets, draw every Sunday 12am UTC on Base",
+  openGraph: {
+    title: "Sunday Bonanza Lottery",
+    description: "Buy tickets, draw every Sunday 12am UTC on Base",
+    url: "https://sunday-bonanza.vercel.app",
+    images: ["https://sunday-bonanza.vercel.app/banner.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sunday Bonanza Lottery",
+    description: "Buy tickets, draw every Sunday 12am UTC on Base",
+    images: ["https://sunday-bonanza.vercel.app/banner.png"]
+  },
+  other: {
+    "fc:frame": "vNext",
+    "fc:frame:image": "https://sunday-bonanza.vercel.app/banner.png",
+    "fc:frame:button:1": "Buy Tickets",
+    "fc:frame:button:1:action": "link",
+    "fc:frame:button:1:target": "https://sunday-bonanza.vercel.app"
+  }
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -32,5 +55,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </WagmiProvider>
       </body>
     </html>
-  );
+  )
 }
