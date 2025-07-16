@@ -70,17 +70,21 @@ export default function Home() {
   return (
     <>
     <Head>
-        <title>Sunday Bonanza Lottery</title>
-        <meta property="og:title" content="Sunday Bonanza Lottery" />
-        <meta property="og:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
-        <meta property="og:image" content="https://sunday-bonanze.vercel.app/banner.png" />
-        <meta property="og:url" content="https://sunday-bonanze.vercel.app" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="fc:frame" content="vNext" />
+      <title>Sunday Bonanza Lottery</title>
+      <meta property="og:title" content="Sunday Bonanza Lottery" />
+      <meta property="og:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
+      <meta property="og:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+      <meta property="og:url" content="https://sunday-bonanza.vercel.app" />
+      <meta name="twitter:card" content="summary_large_image" />
+
+      <meta property="fc:frame" content="vNext" />
+      <meta property="fc:frame:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+      <meta property="fc:frame:button:1" content="Buy Tickets" />
+      <meta property="fc:frame:button:1:action" content="link" />
+      <meta property="fc:frame:button:1:target" content="https://sunday-bonanza.vercel.app" />
     </Head>
-    <div className="flex flex-col items-center text-black justify-center min-h-screen p-6 relative overflow-hidden bg-gradient-to-br from-pink-300 via-blue-300 to-green-300 animate-gradient bg-[400%]">
-      <div className="absolute inset-0 bg-black/30"></div>
-      <div className="absolute top-4 right-4 z-20">
+    <div className="flex flex-col items-center text-[#8A63D2] justify-center min-h-screen p-6 relative overflow-hidden bg-[#17101f]">
+       <div className="absolute top-4 right-4 z-20">
         <button onClick={() => setShowInfo(!showInfo)} className="bg-gray-800 text-white rounded-full w-8 h-8 flex items-center justify-center">i</button>
       </div>
       <AnimatePresence>
@@ -105,15 +109,43 @@ export default function Home() {
       </AnimatePresence>
       <div className="relative z-10 backdrop-blur-md bg-gray-300/20 rounded-xl p-8 w-full max-w-xl text-center shadow-lg">
         <div className="mb-6 flex justify-center">
-          <ConnectButton />
+          <ConnectButton.Custom>
+          {({ account, chain, openConnectModal, openAccountModal, mounted }) => {
+            return (
+              <div
+                {...(!mounted && {
+                  'aria-hidden': true,
+                  style: { opacity: 0, pointerEvents: 'none', userSelect: 'none' },
+                })}
+              >
+                {(!account || !chain) ? (
+                  <button
+                    onClick={openConnectModal}
+                    className="bg-[#8A63D2] hover:bg-[#7b55c6] hover:scale-105 text-white px-4 py-2 rounded-xl"
+                  >
+                    Connect Wallet
+                  </button>
+                ) : (
+                  <button
+                    onClick={openAccountModal}
+                    className="bg-[#8A63D2] hover:bg-[#7b55c6] hover:scale-105 text-white px-4 py-2 rounded-xl"
+                  >
+                    {account.displayName}
+                  </button>
+                )}
+              </div>
+            );
+          }}
+        </ConnectButton.Custom>
+
         </div>
-        <h1 className="text-4xl font-bold mb-6 uppercase text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-blue-500 to-green-500 animate-gradient">Sunday Bonanza</h1>
-        <p className="mb-4 text-xl">Pot: <span className="font-mono">{parseFloat(potETH).toFixed(4)} ETH</span></p>
-        <div className="mb-4 flex flex-wrap gap-3 justify-center">
+        <h1 className="text-4xl font-bold mb-6 uppercase text-transparent bg-clip-text bg-[#8A63D2]">Sunday Bonanza</h1>
+        <p className="mb-4 text-xl text-[#8A63D2]">Pot: <span className="font-mono">{parseFloat(potETH).toFixed(4)} ETH</span></p>
+        <div className="mb-4 flex flex-wrap gap-3 justify-center text-[#1F1F1E]">
           {[0.001, 0.005, 0.02, 0.025, 0.1].map(v => (
             <button
               key={v}
-              className={`px-4 py-2 rounded ${amount === v ? "bg-green-500" : "bg-gray-200 hover:bg-gray-300"}`}
+              className={`px-4 py-2 rounded ${amount === v ? "bg-[#8A63D2]" : "bg-gray-200 hover:bg-gray-300"}`}
               onClick={() => setAmount(v)}
             >{v} ETH</button>
           ))}
@@ -124,15 +156,15 @@ export default function Home() {
             min={0.001}
             step={0.001}
             placeholder="Custom (ETH)"
-            className="border p-2 rounded"
+            className="border p-2 rounded text-white"
             onChange={(e) => setAmount(Number(e.target.value))}
           />
         </div>
-        <div className="mb-6 text-xs text-gray-700">Min 0.001 ETH</div>
+        <div className="mb-6 text-xs text-[#8A63D2]">Min 0.001 ETH</div>
         <button
           onClick={handleBuy}
           disabled={status === "loading"}
-          className="mt-4 px-6 py-3 bg-purple-600 text-white rounded"
+          className="mt-4 px-6 py-3 bg-[#8A63D2] text-white rounded"
         >
           {status === "loading" ? "Processing..." : `Buy Tickets`}
         </button>
@@ -143,7 +175,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className={`mt-4 px-4 py-2 rounded border ${
-                status === "success" ? "border-green-500 bg-green-100 text-green-700" :
+                status === "success" ? "border-[#8A63D2] bg-green-100 text-green-700" :
                 status === "error" ? "border-red-500 bg-red-100 text-red-700" :
                 "border-gray-500 bg-gray-100 text-gray-700"
               } flex justify-between items-center`}
@@ -154,16 +186,6 @@ export default function Home() {
           )}
         </AnimatePresence>
       </div>
-      <style jsx global>{`
-        .animate-gradient {
-          background-size: 100% 200%;
-          animation: gradientAnimation 6s ease infinite;
-        }
-        @keyframes gradientAnimation {
-          0%,100% {background-position: 0% 50%;}
-          50% {background-position: 100% 50%;}
-        }
-      `}</style>
     </div>
   </>
   );
