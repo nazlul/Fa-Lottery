@@ -17,13 +17,6 @@ export const metadata = {
     title: "Sunday Bonanza Lottery",
     description: "Buy tickets, draw every Sunday 12am UTC on Base",
     images: ["https://sunday-bonanza.vercel.app/banner.png"]
-  },
-  other: {
-    "fc:frame": "vNext",
-    "fc:frame:image": "https://sunday-bonanza.vercel.app/banner.png",
-    "fc:frame:button:1": "Buy Tickets",
-    "fc:frame:button:1:action": "post",
-    "fc:frame:post_url": "https://sunday-bonanza.vercel.app/api/frame"
   }
 }
 
@@ -31,6 +24,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <meta property="og:title" content="Sunday Bonanza Lottery" />
+        <meta property="og:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
+        <meta property="og:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+        <meta property="og:url" content="https://sunday-bonanza.vercel.app" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Sunday Bonanza Lottery" />
+        <meta name="twitter:description" content="Buy tickets, draw every Sunday 12am UTC on Base" />
+        <meta name="twitter:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+
         <meta property="fc:frame" content="vNext" />
         <meta property="fc:frame:image" content="https://sunday-bonanza.vercel.app/banner.png" />
         <meta property="fc:frame:button:1" content="Buy Tickets" />
