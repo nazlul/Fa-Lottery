@@ -22,14 +22,21 @@ export const metadata = {
     "fc:frame": "vNext",
     "fc:frame:image": "https://sunday-bonanza.vercel.app/banner.png",
     "fc:frame:button:1": "Buy Tickets",
-    "fc:frame:button:1:action": "link",
-    "fc:frame:button:1:target": "https://sunday-bonanza.vercel.app"
+    "fc:frame:button:1:action": "post",
+    "fc:frame:post_url": "https://sunday-bonanza.vercel.app/api/frame"
   }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <meta property="fc:frame" content="vNext" />
+        <meta property="fc:frame:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+        <meta property="fc:frame:button:1" content="Buy Tickets" />
+        <meta property="fc:frame:button:1:action" content="post" />
+        <meta property="fc:frame:post_url" content="https://sunday-bonanza.vercel.app/api/frame" />
+      </head>
       <body>
         <ClientLayout>{children}</ClientLayout>
       </body>
