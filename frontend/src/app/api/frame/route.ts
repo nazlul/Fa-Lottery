@@ -1,21 +1,26 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
-export async function POST() {
-  return NextResponse.json({
-    type: "frame",
-    version: "vNext",
-    image: "https://sunday-bonanza.vercel.app/banner.png",
-    title: "Sunday Bonanza Lottery",
-    description: "Buy tickets, draw every Sunday 12am UTC on Base",
-    buttons: [
-      {
-        label: "Buy 0.001 ETH",
-        action: { type: "post", url: "https://sunday-bonanza.vercel.app/api/buy?amount=0.001" }
-      },
-      {
-        label: "Check Pot",
-        action: { type: "post", url: "https://sunday-bonanza.vercel.app/api/pot" }
-      }
-    ]
-  })
+export async function GET() {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Sunday Bonanza</title>
+        <meta property="og:title" content="Sunday Bonanza Lottery" />
+        <meta property="og:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+        <meta name="fc:frame" content="vNext" />
+        <meta name="fc:frame:image" content="https://sunday-bonanza.vercel.app/banner.png" />
+        <meta name="fc:frame:button:1" content="Buy 0.001 ETH Ticket" />
+        <meta name="fc:frame:post_url" content="https://sunday-bonanza.vercel.app/api/buy" />
+      </head>
+      <body></body>
+    </html>
+  `;
+
+  return new NextResponse(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html',
+    },
+  });
 }
