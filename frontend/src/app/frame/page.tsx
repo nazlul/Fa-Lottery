@@ -1,21 +1,19 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: "Sunday Bonanza Lottery",
-  description: "Buy tickets, draw every Sunday 12am UTC on Base",
-  openGraph: {
-    title: "Sunday Bonanza Lottery",
-    images: ["https://sunday-bonanza.vercel.app/banner.png"]
-  },
-  other: {
-    "fc:frame": "vNext",
-    "fc:frame:image": "https://sunday-bonanza.vercel.app/banner.png",
-    "fc:frame:button:1": "Buy 0.001 ETH Ticket",
-    "fc:frame:button:1:action": "post",
-    "fc:frame:post_url": "https://sunday-bonanza.vercel.app/api/frame"
-  }
-}
+import { FRAME_BASE_URL } from './../lib/constants';
+import { generateFrameHTML } from './../lib/frame-utils';
 
 export default function FramePage() {
-  return <></>
+  const frameHtml = generateFrameHTML(
+    'Sunday Bonanza Lottery',
+    'Weekly lottery on Farcaster with ETH prizes',
+    `${FRAME_BASE_URL}/api/image/lottery-info`,
+    [
+      { label: 'View Lottery', action: 'link', target: `${FRAME_BASE_URL}/lottery` },
+      { label: 'Buy Tickets', action: 'post' }
+    ],
+    `${FRAME_BASE_URL}/api/frame`
+  );
+
+  return (
+    <div dangerouslySetInnerHTML={{ __html: frameHtml }} />
+  );
 }
